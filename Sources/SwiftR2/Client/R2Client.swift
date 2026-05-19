@@ -48,7 +48,6 @@ import Foundation
 public actor R2Client {
     private let configuration: R2ClientConfiguration
     private var httpClient: HTTPClient?
-    private var credentials: R2Credentials?
 
     /// Creates a new R2 client with the specified configuration.
     ///
@@ -590,7 +589,6 @@ public actor R2Client {
         let creds = try await configuration.credentialsProvider.credentials()
         let client = HTTPClient(configuration: configuration, credentials: creds)
         self.httpClient = client
-        self.credentials = creds
         return client
     }
 
