@@ -92,8 +92,8 @@ extension R2Error: LocalizedError {
     switch self {
       case .notFound(_, let key):
         return key != nil
-        ? String(localized: "Object not found.", bundle: .module)
-        : String(localized: "Bucket not found.", bundle: .module)
+          ? String(localized: "Object not found.", bundle: .module)
+          : String(localized: "Bucket not found.", bundle: .module)
       case .accessDenied:
         return String(localized: "Access denied.", bundle: .module)
       case .invalidRequest:
@@ -129,7 +129,10 @@ extension R2Error: LocalizedError {
     switch self {
       case let .notFound(bucket, key):
         if let key {
-          return String(localized: "The object “\(key)” does not exist in bucket '\(bucket)'.", bundle: .module)
+          return String(
+            localized: "The object “\(key)” does not exist in bucket '\(bucket)'.",
+            bundle: .module
+          )
         }
         return String(localized: "The bucket “\(bucket)” does not exist.", bundle: .module)
       case .accessDenied(let message):
@@ -145,12 +148,19 @@ extension R2Error: LocalizedError {
       case .bucketNotFound(let bucket):
         return String(localized: "The bucket “\(bucket)” does not exist.", bundle: .module)
       case let .objectAlreadyExists(bucket, key):
-        return String(localized: "The object “\(key)” already exists in bucket '\(bucket)'.", bundle: .module)
+        return String(
+          localized: "The object “\(key)” already exists in bucket '\(bucket)'.",
+          bundle: .module
+        )
       case .preconditionFailed(let message):
         return message
       case .rateLimited(let retryAfter):
-        if let retryAfterS = retryAfter.map({ Measurement(value: $0, unit: UnitDuration.seconds) }) {
-          return String(localized: "Retry after \(retryAfterS, format: .measurement(width: .narrow)) seconds.", bundle: .module)
+        if let retryAfterS = retryAfter.map({ Measurement(value: $0, unit: UnitDuration.seconds) })
+        {
+          return String(
+            localized: "Retry after \(retryAfterS, format: .measurement(width: .narrow)) seconds.",
+            bundle: .module
+          )
         }
         return nil
       case .multipartUploadError(let message):
@@ -158,7 +168,10 @@ extension R2Error: LocalizedError {
       case .uploadAborted(let uploadId):
         return String(localized: "The upload with ID “\(uploadId)” was aborted.", bundle: .module)
       case let .checksumMismatch(expected, actual):
-        return String(localized: "Expected checksum “\(expected)” but received “\(actual)”.", bundle: .module)
+        return String(
+          localized: "Expected checksum “\(expected)” but received “\(actual)”.",
+          bundle: .module
+        )
       case .serviceError(let error):
         return error.failureReason
       case .unknown(let message):
@@ -169,14 +182,24 @@ extension R2Error: LocalizedError {
   public var recoverySuggestion: String? {
     switch self {
       case .accessDenied:
-        return String(localized: "Verify that your credentials have the required permissions.", bundle: .module)
+        return String(
+          localized: "Verify that your credentials have the required permissions.",
+          bundle: .module
+        )
       case .missingCredentials:
         return String(localized: "Check your credentials provider configuration.", bundle: .module)
       case .networkError:
-        return String(localized: "This may be a transient error. Consider retrying the request.", bundle: .module)
+        return String(
+          localized: "This may be a transient error. Consider retrying the request.",
+          bundle: .module
+        )
       case .rateLimited(let retryAfter):
-        if let retryAfterS = retryAfter.map({ Measurement(value: $0, unit: UnitDuration.seconds) }) {
-          return String(localized: "Retry after \(retryAfterS, format: .measurement(width: .narrow)) seconds.", bundle: .module)
+        if let retryAfterS = retryAfter.map({ Measurement(value: $0, unit: UnitDuration.seconds) })
+        {
+          return String(
+            localized: "Retry after \(retryAfterS, format: .measurement(width: .narrow)) seconds.",
+            bundle: .module
+          )
         }
         return String(localized: "Wait before retrying the request.", bundle: .module)
       case .checksumMismatch:

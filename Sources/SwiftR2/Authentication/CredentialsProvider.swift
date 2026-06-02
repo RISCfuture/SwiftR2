@@ -23,14 +23,14 @@ import Foundation
 /// }
 /// ```
 public protocol CredentialsProvider: Sendable {
-    /// Retrieves the current credentials.
-    ///
-    /// This method may be called multiple times during the client's lifetime.
-    /// Implementations should cache credentials if retrieval is expensive.
-    ///
-    /// - Returns: The R2 credentials for signing requests.
-    /// - Throws: ``R2Error/missingCredentials(_:)`` if credentials cannot be retrieved.
-    func credentials() async throws -> R2Credentials
+  /// Retrieves the current credentials.
+  ///
+  /// This method may be called multiple times during the client's lifetime.
+  /// Implementations should cache credentials if retrieval is expensive.
+  ///
+  /// - Returns: The R2 credentials for signing requests.
+  /// - Throws: ``R2Error/missingCredentials(_:)`` if credentials cannot be retrieved.
+  func credentials() async throws -> R2Credentials
 }
 
 /// A credentials provider that returns static credentials.
@@ -46,30 +46,30 @@ public protocol CredentialsProvider: Sendable {
 /// )
 /// ```
 public struct StaticCredentialsProvider: CredentialsProvider {
-    private let _credentials: R2Credentials
+  private let _credentials: R2Credentials
 
-    /// Creates a static credentials provider from an ``R2Credentials`` instance.
-    ///
-    /// - Parameter credentials: The credentials to provide.
-    public init(credentials: R2Credentials) {
-        self._credentials = credentials
-    }
+  /// Creates a static credentials provider from an ``R2Credentials`` instance.
+  ///
+  /// - Parameter credentials: The credentials to provide.
+  public init(credentials: R2Credentials) {
+    self._credentials = credentials
+  }
 
-    /// Creates a static credentials provider from key strings.
-    ///
-    /// - Parameters:
-    ///   - accessKeyId: The access key ID.
-    ///   - secretAccessKey: The secret access key.
-    public init(accessKeyId: String, secretAccessKey: String) {
-        self._credentials = R2Credentials(
-            accessKeyId: accessKeyId,
-            secretAccessKey: secretAccessKey
-        )
-    }
+  /// Creates a static credentials provider from key strings.
+  ///
+  /// - Parameters:
+  ///   - accessKeyId: The access key ID.
+  ///   - secretAccessKey: The secret access key.
+  public init(accessKeyId: String, secretAccessKey: String) {
+    self._credentials = R2Credentials(
+      accessKeyId: accessKeyId,
+      secretAccessKey: secretAccessKey
+    )
+  }
 
-    public func credentials() throws -> R2Credentials {
-        _credentials
-    }
+  public func credentials() throws -> R2Credentials {
+    _credentials
+  }
 }
 
 /// A credentials provider that reads from environment variables.
@@ -89,37 +89,38 @@ public struct StaticCredentialsProvider: CredentialsProvider {
 /// )
 /// ```
 public struct EnvironmentCredentialsProvider: CredentialsProvider {
-    /// The environment variable name for the access key ID.
-    ///
-    /// Default: `"R2_ACCESS_KEY_ID"`
-    public static let accessKeyIdVariable = "R2_ACCESS_KEY_ID"
+  /// The environment variable name for the access key ID.
+  ///
+  /// Default: `"R2_ACCESS_KEY_ID"`
+  public static let accessKeyIdVariable = "R2_ACCESS_KEY_ID"
 
-    /// The environment variable name for the secret access key.
-    ///
-    /// Default: `"R2_SECRET_ACCESS_KEY"`
-    public static let secretAccessKeyVariable = "R2_SECRET_ACCESS_KEY"
+  /// The environment variable name for the secret access key.
+  ///
+  /// Default: `"R2_SECRET_ACCESS_KEY"`
+  public static let secretAccessKeyVariable = "R2_SECRET_ACCESS_KEY"
 
-    /// Creates an environment credentials provider.
-    public init() {}
+  /// Creates an environment credentials provider.
+  public init() {}
 
-    public func credentials() throws -> R2Credentials {
-        guard let accessKeyId = ProcessInfo.processInfo.environment[Self.accessKeyIdVariable] else {
-            throw R2Error.missingCredentials(
-                "Environment variable \(Self.accessKeyIdVariable) not set"
-            )
-        }
-
-        guard let secretAccessKey = ProcessInfo.processInfo.environment[Self.secretAccessKeyVariable] else {
-            throw R2Error.missingCredentials(
-                "Environment variable \(Self.secretAccessKeyVariable) not set"
-            )
-        }
-
-        return R2Credentials(
-            accessKeyId: accessKeyId,
-            secretAccessKey: secretAccessKey
-        )
+  public func credentials() throws -> R2Credentials {
+    guard let accessKeyId = ProcessInfo.processInfo.environment[Self.accessKeyIdVariable] else {
+      throw R2Error.missingCredentials(
+        "Environment variable \(Self.accessKeyIdVariable) not set"
+      )
     }
+
+    guard let secretAccessKey = ProcessInfo.processInfo.environment[Self.secretAccessKeyVariable]
+    else {
+      throw R2Error.missingCredentials(
+        "Environment variable \(Self.secretAccessKeyVariable) not set"
+      )
+    }
+
+    return R2Credentials(
+      accessKeyId: accessKeyId,
+      secretAccessKey: secretAccessKey
+    )
+  }
 }
 
 /// A credentials provider that chains multiple providers together.
@@ -134,27 +135,27 @@ public struct EnvironmentCredentialsProvider: CredentialsProvider {
 /// ])
 /// ```
 public struct ChainedCredentialsProvider: CredentialsProvider {
-    private let providers: [any CredentialsProvider]
+  private let providers: [any CredentialsProvider]
 
-    /// Creates a chained credentials provider.
-    ///
-    /// - Parameter providers: The providers to try in order. The first provider
-    ///   that returns credentials successfully will be used.
-    public init(providers: [any CredentialsProvider]) {
-        self.providers = providers
+  /// Creates a chained credentials provider.
+  ///
+  /// - Parameter providers: The providers to try in order. The first provider
+  ///   that returns credentials successfully will be used.
+  public init(providers: [any CredentialsProvider]) {
+    self.providers = providers
+  }
+
+  public func credentials() async throws -> R2Credentials {
+    var lastError: Error?
+
+    for provider in providers {
+      do {
+        return try await provider.credentials()
+      } catch {
+        lastError = error
+      }
     }
 
-    public func credentials() async throws -> R2Credentials {
-        var lastError: Error?
-
-        for provider in providers {
-            do {
-                return try await provider.credentials()
-            } catch {
-                lastError = error
-            }
-        }
-
-        throw lastError ?? R2Error.missingCredentials("No credentials providers configured")
-    }
+    throw lastError ?? R2Error.missingCredentials("No credentials providers configured")
+  }
 }
