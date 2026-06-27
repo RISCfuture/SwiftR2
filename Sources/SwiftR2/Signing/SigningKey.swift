@@ -1,5 +1,5 @@
 import Foundation
-@preconcurrency import CryptoKit
+import CryptoKit
 
 /// A signing key derived for AWS Signature V4.
 struct SigningKey: Sendable {

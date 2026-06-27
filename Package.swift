@@ -1,6 +1,11 @@
 // swift-tools-version: 6.2
 import PackageDescription
 
+let approachableConcurrency: [SwiftSetting] = [
+  .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+  .enableUpcomingFeature("InferIsolatedConformances")
+]
+
 let package = Package(
   name: "SwiftR2",
   defaultLocalization: "en",
@@ -17,10 +22,12 @@ let package = Package(
     .target(
       name: "SwiftR2",
       resources: [.process("Resources")],
-      swiftSettings: [
-        .enableExperimentalFeature("StrictConcurrency")
-      ]
+      swiftSettings: approachableConcurrency
     ),
-    .testTarget(name: "SwiftR2Tests", dependencies: ["SwiftR2"])
+    .testTarget(
+      name: "SwiftR2Tests",
+      dependencies: ["SwiftR2"],
+      swiftSettings: approachableConcurrency
+    )
   ]
 )

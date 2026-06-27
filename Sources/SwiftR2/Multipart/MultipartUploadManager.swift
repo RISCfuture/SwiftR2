@@ -286,7 +286,7 @@ public actor MultipartUploadManager {
 
         // Exponential backoff
         let delay = Double(1 << attempt) * 0.5
-        try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+        try await Task.sleep(for: .seconds(delay))
       }
     }
 
