@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-07-06
+
+### Added
+
+- Linux support. AWS SigV4 signing uses swift-crypto on non-Apple platforms,
+  `URLSession`/XML parsing are guarded behind
+  `FoundationNetworking`/`FoundationXML`, the async byte-streaming download path
+  is reimplemented on top of `URLSessionDataDelegate` (open-source Foundation
+  lacks `URLSession.bytes`), and a `String(localized:)` shim covers error
+  strings. Apple platforms are unaffected and continue to use CryptoKit.
+
 ## [1.1.0] - 2026-06-26
 
 ### Changed
