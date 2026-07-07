@@ -1,5 +1,18 @@
 import Foundation
 
+/// Formats a rate-limit retry delay for display in an error message.
+///
+/// swift-corelibs-foundation doesn't implement `Measurement`'s locale-aware
+/// `.formatted(.measurement(width:))` style, so this falls back to a plain
+/// numeric value on Linux.
+private func retryAfterDescription(_ measurement: Measurement<UnitDuration>) -> String {
+  #if canImport(FoundationNetworking)
+    String(Int(measurement.converted(to: .seconds).value.rounded()))
+  #else
+    measurement.formatted(.measurement(width: .narrow))
+  #endif
+}
+
 /// Errors that can occur when interacting with Cloudflare R2.
 ///
 /// All ``R2Client`` methods throw `R2Error` when operations fail.
@@ -158,7 +171,7 @@ extension R2Error: LocalizedError {
         if let retryAfterS = retryAfter.map({ Measurement(value: $0, unit: UnitDuration.seconds) })
         {
           return String(
-            localized: "Retry after \(retryAfterS, format: .measurement(width: .narrow)) seconds.",
+            localized: "Retry after \(retryAfterDescription(retryAfterS)) seconds.",
             bundle: .module
           )
         }
@@ -197,7 +210,7 @@ extension R2Error: LocalizedError {
         if let retryAfterS = retryAfter.map({ Measurement(value: $0, unit: UnitDuration.seconds) })
         {
           return String(
-            localized: "Retry after \(retryAfterS, format: .measurement(width: .narrow)) seconds.",
+            localized: "Retry after \(retryAfterDescription(retryAfterS)) seconds.",
             bundle: .module
           )
         }
