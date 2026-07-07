@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+  import FoundationNetworking
+#endif
 
 /// A stream of data chunks from an R2 download.
 ///
@@ -38,11 +41,11 @@ public struct R2DownloadStream: AsyncSequence, Sendable {
   /// Keys are returned without the `x-amz-meta-` prefix.
   public let metadata: [String: String]
 
-  private let bytes: URLSession.AsyncBytes
+  private let bytes: R2ByteStream
   private let chunkSize: Int
 
   init(
-    bytes: URLSession.AsyncBytes,
+    bytes: R2ByteStream,
     response: HTTPURLResponse,
     chunkSize: Int = 65536
   ) {
@@ -90,12 +93,12 @@ public struct R2DownloadStream: AsyncSequence, Sendable {
   }
 
   public struct AsyncIterator: AsyncIteratorProtocol {
-    private var bytesIterator: URLSession.AsyncBytes.AsyncIterator
+    private var bytesIterator: R2ByteStream.AsyncIterator
     private let chunkSize: Int
     private var buffer: Data
     private var finished: Bool = false
 
-    init(bytes: URLSession.AsyncBytes, chunkSize: Int) {
+    init(bytes: R2ByteStream, chunkSize: Int) {
       self.bytesIterator = bytes.makeAsyncIterator()
       self.chunkSize = chunkSize
       self.buffer = Data()

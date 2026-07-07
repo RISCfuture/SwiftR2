@@ -1,5 +1,12 @@
 import Foundation
-import CryptoKit
+#if canImport(FoundationNetworking)
+  import FoundationNetworking
+#endif
+#if canImport(CryptoKit)
+  import CryptoKit
+#else
+  import Crypto
+#endif
 
 /// AWS Signature Version 4 request signing.
 ///

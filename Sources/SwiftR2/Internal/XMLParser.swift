@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationXML)
+  import FoundationXML
+#endif
 
 /// Parser for S3/R2 XML responses.
 enum R2XMLParser {

@@ -1,4 +1,13 @@
 import Foundation
+#if canImport(FoundationNetworking)
+  import FoundationNetworking
+#endif
+
+#if canImport(FoundationNetworking)
+  typealias R2ByteStream = URLSessionByteStream
+#else
+  typealias R2ByteStream = URLSession.AsyncBytes
+#endif
 
 /// Internal HTTP client wrapper for URLSession.
 actor HTTPClient {
@@ -57,7 +66,7 @@ actor HTTPClient {
     key: String? = nil,
     queryItems: [URLQueryItem]? = nil,
     headers: [String: String] = [:]
-  ) async throws -> (URLSession.AsyncBytes, HTTPURLResponse) {
+  ) async throws -> (R2ByteStream, HTTPURLResponse) {
     let request = try buildRequest(
       method: method,
       bucket: bucket,
@@ -67,7 +76,11 @@ actor HTTPClient {
       body: nil
     )
 
-    let (bytes, response) = try await session.bytes(for: request)
+    #if canImport(FoundationNetworking)
+      let (bytes, response) = try await session.streamingBytes(for: request)
+    #else
+      let (bytes, response) = try await session.bytes(for: request)
+    #endif
 
     guard let httpResponse = response as? HTTPURLResponse else {
       throw R2Error.invalidResponse(message: "Invalid response type")
