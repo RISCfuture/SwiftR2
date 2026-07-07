@@ -47,7 +47,8 @@ import Foundation
   extension URLSession {
     /// Starts a streaming request, mirroring `URLSession.bytes(for:)` on platforms
     /// where swift-corelibs-foundation doesn't implement it.
-    func streamingBytes(for request: URLRequest) async throws -> (URLSessionByteStream, URLResponse) {
+    func streamingBytes(for request: URLRequest) async throws -> (URLSessionByteStream, URLResponse)
+    {
       let (dataStream, dataContinuation) = AsyncThrowingStream<Data, Error>.makeStream()
 
       let response = try await withCheckedThrowingContinuation {
@@ -84,8 +85,8 @@ import Foundation
     }
 
     func urlSession(
-      _ session: URLSession,
-      dataTask: URLSessionDataTask,
+      _: URLSession,
+      dataTask _: URLSessionDataTask,
       didReceive response: URLResponse,
       completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
     ) {
@@ -94,11 +95,11 @@ import Foundation
       completionHandler(.allow)
     }
 
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+    func urlSession(_: URLSession, dataTask _: URLSessionDataTask, didReceive data: Data) {
       dataContinuation.yield(data)
     }
 
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    func urlSession(_: URLSession, task _: URLSessionTask, didCompleteWithError error: Error?) {
       if let error {
         responseContinuation?.resume(throwing: error)
         responseContinuation = nil

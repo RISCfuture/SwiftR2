@@ -24,7 +24,9 @@ let package = Package(
       name: "SwiftR2",
       dependencies: [
         .product(
-          name: "Crypto", package: "swift-crypto", condition: .when(platforms: [.linux])
+          name: "Crypto",
+          package: "swift-crypto",
+          condition: .when(platforms: [.linux])
         )
       ],
       resources: [.process("Resources")],
