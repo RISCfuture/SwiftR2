@@ -44,6 +44,22 @@ jobs:
         run: swift build -v
       - name: Test
         run: swift test -v
+  documentation:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: "6.2"
+      - name: Build Documentation
+        run: |
+          swift package \
+            --allow-writing-to-directory "$RUNNER_TEMP/docs" \
+            generate-documentation \
+            --target SwiftR2 \
+            --warnings-as-errors \
+            --output-path "$RUNNER_TEMP/docs"
   lint:
     name: Run SwiftLint
     runs-on: ubuntu-latest
