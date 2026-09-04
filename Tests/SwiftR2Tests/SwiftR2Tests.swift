@@ -5,7 +5,7 @@ import Foundation
 // MARK: - Credentials Tests
 
 @Test
-func testStaticCredentialsProvider() throws {
+func `returns the credentials given to the static provider`() throws {
   let provider = StaticCredentialsProvider(
     accessKeyId: "test-access-key",
     secretAccessKey: "test-secret-key"
@@ -17,7 +17,7 @@ func testStaticCredentialsProvider() throws {
 }
 
 @Test
-func testR2Credentials() {
+func `exposes the access key ID and secret access key`() {
   let credentials = R2Credentials(
     accessKeyId: "access",
     secretAccessKey: "secret"
@@ -30,7 +30,7 @@ func testR2Credentials() {
 // MARK: - Configuration Tests
 
 @Test
-func testR2ClientConfiguration() {
+func `derives the R2 endpoint, region, and service from the account ID`() {
   let config = R2ClientConfiguration(
     accountId: "test-account",
     accessKeyId: "access",
@@ -46,7 +46,7 @@ func testR2ClientConfiguration() {
 // MARK: - Error Tests
 
 @Test
-func testR2ErrorDescriptions() {
+func `describes R2 errors with a failure reason and recovery suggestion`() {
   // Test R2Error with notFound case
   let notFoundError = R2Error.notFound(bucket: "my-bucket", key: "my-key")
   #expect(notFoundError.errorDescription == "Object not found.")
@@ -75,13 +75,13 @@ func testR2ErrorDescriptions() {
 // MARK: - Model Tests
 
 @Test
-func testStorageClass() {
+func `maps storage classes to their S3 raw values`() {
   #expect(StorageClass.standard.rawValue == "STANDARD")
   #expect(StorageClass.standardIA.rawValue == "STANDARD_IA")
 }
 
 @Test
-func testR2ObjectMetadata() {
+func `retains every field of R2 object metadata`() {
   let metadata = R2ObjectMetadata(
     key: "test.txt",
     size: 1024,
@@ -101,7 +101,7 @@ func testR2ObjectMetadata() {
 }
 
 @Test
-func testR2ListObject() {
+func `retains every field of a listed R2 object`() {
   let obj = R2ListObject(
     key: "folder/file.txt",
     size: 2048,
@@ -116,7 +116,7 @@ func testR2ListObject() {
 }
 
 @Test
-func testR2Progress() {
+func `computes upload progress only when the total size is known`() {
   let progress1 = R2Progress(completedBytes: 500, totalBytes: 1000)
   #expect(progress1.fractionCompleted == 0.5)
   #expect(progress1.percentCompleted == 50)
@@ -129,7 +129,7 @@ func testR2Progress() {
 // MARK: - Multipart Configuration Tests
 
 @Test
-func testMultipartUploadConfiguration() {
+func `applies multipart upload defaults and enforces the minimum part size`() {
   let config = MultipartUploadConfiguration()
   #expect(config.partSize == 8 * 1024 * 1024)
   #expect(config.maxConcurrentUploads == 4)
@@ -142,7 +142,7 @@ func testMultipartUploadConfiguration() {
 }
 
 @Test
-func testResumableUploadState() throws {
+func `round-trips resumable upload state and reports the next part number`() throws {
   let state = ResumableUploadState(
     bucket: "my-bucket",
     key: "my-key",
@@ -170,7 +170,7 @@ func testResumableUploadState() throws {
 // MARK: - Upload Source Tests
 
 @Test
-func testDataUploadSource() async throws {
+func `splits a data upload source into chunks that reassemble to the original`() async throws {
   let testData = Data("Hello, World!".utf8)
   let source = DataUploadSource(data: testData, contentType: "text/plain", chunkSize: 5)
 
@@ -195,7 +195,7 @@ func testDataUploadSource() async throws {
 // MARK: - Delete Objects Result Tests
 
 @Test
-func testDeleteObjectsResult() {
+func `separates deleted objects from delete errors`() {
   let deleted = R2DeleteObjectsResult.DeletedObject(
     key: "deleted-file.txt",
     versionId: nil,
@@ -221,7 +221,7 @@ func testDeleteObjectsResult() {
 // MARK: - Multipart Models Tests
 
 @Test
-func testMultipartUploadModels() {
+func `exposes the upload ID, part numbers, and etags of the multipart models`() {
   let createResult = R2CreateMultipartUploadResult(
     bucket: "bucket",
     key: "key",

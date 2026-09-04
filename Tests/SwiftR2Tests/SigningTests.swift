@@ -8,7 +8,7 @@ import Foundation
 // MARK: - Signing Key Tests
 
 @Test
-func testSigningKeyDerivation() {
+func `derives a signing key and its credential scope`() {
   // Test case from AWS documentation
   let signingKey = SigningKey(
     secretAccessKey: "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY",
@@ -24,7 +24,7 @@ func testSigningKeyDerivation() {
 }
 
 @Test
-func testSigningKeyForR2() {
+func `derives a signing key for the R2 auto region`() {
   let signingKey = SigningKey(
     secretAccessKey: "test-secret-key",
     date: "20240115",
@@ -40,7 +40,7 @@ func testSigningKeyForR2() {
 // MARK: - Canonical Request Tests
 
 @Test
-func testCanonicalRequestFromURLRequest() {
+func `builds a canonical request from a URL request`() {
   let url = URL(string: "https://example.r2.cloudflarestorage.com/bucket/test.txt")!
   var request = URLRequest(url: url)
   request.httpMethod = "GET"
@@ -60,7 +60,7 @@ func testCanonicalRequestFromURLRequest() {
 }
 
 @Test
-func testCanonicalQueryString() {
+func `sorts query parameters into the canonical query string`() {
   let url = URL(string: "https://example.com/bucket?prefix=test&max-keys=100&delimiter=/")!
   var request = URLRequest(url: url)
   request.httpMethod = "GET"
@@ -79,7 +79,7 @@ func testCanonicalQueryString() {
 }
 
 @Test
-func testPayloadHash() {
+func `hashes a payload with SHA-256`() {
   let testPayload = Data("Hello, World!".utf8)
   let hash = CanonicalRequest.sha256Hash(testPayload)
 
@@ -88,7 +88,7 @@ func testPayloadHash() {
 }
 
 @Test
-func testEmptyPayloadHash() {
+func `hashes an empty payload with SHA-256`() {
   let hash = CanonicalRequest.sha256Hash(Data())
 
   // SHA-256 hash of empty string
@@ -96,7 +96,7 @@ func testEmptyPayloadHash() {
 }
 
 @Test
-func testURIEncoding() {
+func `URI-encodes strings and optionally preserves slashes`() {
   // Test basic URI encoding
   let encoded = CanonicalRequest.uriEncode("hello world", encodeSlash: true)
   #expect(encoded == "hello%20world")
@@ -113,7 +113,7 @@ func testURIEncoding() {
 // MARK: - AWS Signature V4 Tests
 
 @Test
-func testAWSSignatureV4Signing() {
+func `signs a request with AWS Signature V4 headers`() {
   let credentials = R2Credentials(
     accessKeyId: "AKIAIOSFODNN7EXAMPLE",
     secretAccessKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
@@ -150,7 +150,7 @@ func testAWSSignatureV4Signing() {
 }
 
 @Test
-func testPresignedURLGeneration() {
+func `generates a presigned GET URL with the required query parameters`() {
   let credentials = R2Credentials(
     accessKeyId: "AKIAIOSFODNN7EXAMPLE",
     secretAccessKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
@@ -182,7 +182,7 @@ func testPresignedURLGeneration() {
 }
 
 @Test
-func testPresignedPutURL() {
+func `generates a presigned PUT URL with additional signed headers`() {
   let credentials = R2Credentials(
     accessKeyId: "test-access-key",
     secretAccessKey: "test-secret-key"
