@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 /// Formats a rate-limit retry delay for display in an error message.
 ///

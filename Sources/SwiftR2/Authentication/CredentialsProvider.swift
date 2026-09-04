@@ -146,7 +146,7 @@ public struct ChainedCredentialsProvider: CredentialsProvider {
   }
 
   public func credentials() async throws -> R2Credentials {
-    var lastError: Error?
+    var lastError: (any Error)?
 
     for provider in providers {
       do {

@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 /// Result of initiating a multipart upload.
 ///

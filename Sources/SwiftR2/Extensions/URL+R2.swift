@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 extension R2Client {
   /// Uploads a file to R2.

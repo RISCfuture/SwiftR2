@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 /// Manages multipart uploads with parallel part uploading.
 ///
@@ -265,7 +265,7 @@ public actor MultipartUploadManager {
     partNumber: Int,
     data: Data
   ) async throws -> R2CompletedPart {
-    var lastError: Error?
+    var lastError: (any Error)?
 
     for attempt in 0...configuration.maxRetryAttempts {
       do {
