@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 /// Metadata for an R2 object.
 ///

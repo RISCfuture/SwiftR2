@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 /// State information for resuming a multipart upload.
 ///

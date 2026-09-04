@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 /// An async sequence that reads chunks from a file.
 ///

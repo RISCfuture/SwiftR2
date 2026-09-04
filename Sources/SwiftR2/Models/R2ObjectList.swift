@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 /// An object entry in a list response.
 ///
