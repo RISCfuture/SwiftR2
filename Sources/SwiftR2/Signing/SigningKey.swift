@@ -1,9 +1,5 @@
 import Foundation
-#if canImport(CryptoKit)
-  import CryptoKit
-#else
-  import Crypto
-#endif
+import Crypto
 
 /// A signing key derived for AWS Signature V4.
 struct SigningKey: Sendable {

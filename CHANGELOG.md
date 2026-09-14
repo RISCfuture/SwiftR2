@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Simplified the signing code's cryptography import. Built as a SwiftPM
+  dependency on Apple platforms, swift-crypto's `Crypto` module is a
+  re-export of `CryptoKit`, so the `#if canImport(CryptoKit)` fallbacks and
+  the Linux-only dependency condition are gone in favor of a plain
+  `import Crypto`. No behavioral change on any platform.
+
 ## [1.2.1] - 2026-09-14
 
 ### Changed
