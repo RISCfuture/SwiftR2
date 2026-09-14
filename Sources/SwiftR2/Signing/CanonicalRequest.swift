@@ -2,11 +2,7 @@ import Foundation
 #if canImport(FoundationNetworking)
   import FoundationNetworking
 #endif
-#if canImport(CryptoKit)
-  import CryptoKit
-#else
-  import Crypto
-#endif
+import Crypto
 
 /// Builds a canonical request for AWS Signature V4.
 struct CanonicalRequest: Sendable {
