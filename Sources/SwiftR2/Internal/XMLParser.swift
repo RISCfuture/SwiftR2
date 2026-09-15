@@ -201,18 +201,10 @@ enum R2XMLParser {
     return R2DeleteObjectsResult(deleted: deleted, errors: errors)
   }
 
-  /// Parses an ISO 8601 date string.
+  /// Parses an ISO 8601 date string, with or without fractional seconds.
   private static func parseISO8601Date(_ string: String) -> Date? {
-    let formatter = ISO8601DateFormatter()
-    formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-
-    if let date = formatter.date(from: string) {
-      return date
-    }
-
-    // Try without fractional seconds
-    formatter.formatOptions = [.withInternetDateTime]
-    return formatter.date(from: string)
+    let strategies: [Date.ISO8601FormatStyle] = [.init(includingFractionalSeconds: true), .init()]
+    return strategies.lazy.compactMap { try? $0.parse(string) }.first
   }
 }
 

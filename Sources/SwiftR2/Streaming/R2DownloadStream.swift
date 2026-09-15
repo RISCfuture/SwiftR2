@@ -65,14 +65,8 @@ public struct R2DownloadStream: AsyncSequence, Sendable {
     self.etag = response.value(forHTTPHeaderField: "ETag")?
       .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
 
-    if let lastModifiedString = response.value(forHTTPHeaderField: "Last-Modified") {
-      let formatter = DateFormatter()
-      formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
-      formatter.locale = Locale(identifier: "en_US_POSIX")
-      self.lastModified = formatter.date(from: lastModifiedString)
-    } else {
-      self.lastModified = nil
-    }
+    self.lastModified = response.value(forHTTPHeaderField: "Last-Modified")
+      .flatMap(Date.parsingHTTPHeader)
 
     // Extract custom metadata (x-amz-meta-* headers)
     var customMetadata: [String: String] = [:]

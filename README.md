@@ -2,7 +2,7 @@
 
 [![Build and Test](https://github.com/riscfuture/SwiftR2/actions/workflows/tests.yml/badge.svg)](https://github.com/riscfuture/SwiftR2/actions/workflows/tests.yml)
 [![Documentation](https://github.com/riscfuture/SwiftR2/actions/workflows/documentation.yml/badge.svg)](https://riscfuture.github.io/SwiftR2/)
-[![Swift 6.2+](https://img.shields.io/badge/Swift-6.2+-orange.svg)](https://swift.org)
+[![Swift 6.0+](https://img.shields.io/badge/Swift-6.0+-orange.svg)](https://swift.org)
 [![Platforms](https://img.shields.io/badge/Platforms-macOS%20|%20iOS%20|%20tvOS%20|%20watchOS-blue.svg)](https://swift.org)
 
 A native Swift client for Cloudflare R2 object storage with full async/await
@@ -295,7 +295,7 @@ swift test
 ## Requirements
 
 - Swift 6.2+
-- macOS 13+ / iOS 16+ / tvOS 16+ / watchOS 9+ / visionOS 1+ / Mac Catalyst 16+
+- macOS 26+ / iOS 26+ / tvOS 26+ / watchOS 26+ / visionOS 26+
 
 ## License
 
