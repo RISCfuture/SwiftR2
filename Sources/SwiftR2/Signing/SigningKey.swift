@@ -58,6 +58,6 @@ struct SigningKey: Sendable {
   /// - Returns: The signature as a hex string.
   func sign(_ data: Data) -> String {
     let signature = HMAC<SHA256>.authenticationCode(for: data, using: key)
-    return signature.map { String(format: "%02x", $0) }.joined()
+    return signature.map { unsafe String(format: "%02x", $0) }.joined()
   }
 }

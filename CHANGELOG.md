@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the Linux-only dependency condition are gone in favor of a plain
   `import Crypto`. No behavioral change on any platform.
 
+### Security
+
+- Strict memory safety (SE-0458) is enabled. The two diagnostics it reports are
+  both `String(format:)` hex formatting of digest bytes in the SigV4 signing
+  path, and are audited and marked.
+
 ## [1.2.1] - 2026-09-14
 
 ### Changed
