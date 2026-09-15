@@ -607,15 +607,9 @@ public actor R2Client {
       response.value(forHTTPHeaderField: "ETag")?
       .trimmingCharacters(in: CharacterSet(charactersIn: "\"")) ?? ""
 
-    let lastModified: Date
-    if let dateString = response.value(forHTTPHeaderField: "Last-Modified") {
-      let formatter = DateFormatter()
-      formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
-      formatter.locale = Locale(identifier: "en_US_POSIX")
-      lastModified = formatter.date(from: dateString) ?? Date()
-    } else {
-      lastModified = Date()
-    }
+    let lastModified =
+      response.value(forHTTPHeaderField: "Last-Modified")
+      .flatMap(Date.parsingHTTPHeader) ?? Date()
 
     let contentType = response.value(forHTTPHeaderField: "Content-Type")
 

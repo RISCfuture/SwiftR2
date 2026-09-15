@@ -15,7 +15,7 @@ let package = Package(
   name: "SwiftR2",
   defaultLocalization: "en",
   platforms: [
-    .macOS(.v13), .iOS(.v16), .tvOS(.v16), .watchOS(.v9), .visionOS(.v1), .macCatalyst(.v16)
+    .macOS(.v26), .iOS(.v26), .tvOS(.v26), .watchOS(.v26), .visionOS(.v26), .macCatalyst(.v26)
   ],
   products: [
     .library(name: "SwiftR2", targets: ["SwiftR2"])
