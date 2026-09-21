@@ -9,11 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **BREAKING:** The platform floor rises to macOS 26, iOS 26, tvOS 26, watchOS
+  26, visionOS 26 and Mac Catalyst 26. `Last-Modified` headers are now parsed
+  with `Date.HTTPFormatStyle`, whose `.http` style is macOS 26. Linux is
+  unaffected — swift-foundation marks these always-available there — and the
+  macos-15 CI legs go, since a macOS 26 deployment target needs the macOS 26
+  SDK.
+- RFC 1123 dates are parsed through one `Date.parsingHTTPHeader(_:)` helper
+  rather than a `DateFormatter` hand-rolled in two places, and the XML parser
+  uses `Date.ISO8601FormatStyle` in place of a two-pass `ISO8601DateFormatter`.
 - Simplified the signing code's cryptography import. Built as a SwiftPM
   dependency on Apple platforms, swift-crypto's `Crypto` module is a
   re-export of `CryptoKit`, so the `#if canImport(CryptoKit)` fallbacks and
   the Linux-only dependency condition are gone in favor of a plain
   `import Crypto`. No behavioral change on any platform.
+
+### Security
+
+- Strict memory safety (SE-0458) is enabled. The two diagnostics it reports are
+  both `String(format:)` hex formatting of digest bytes in the SigV4 signing
+  path, and are audited and marked.
 
 ## [1.2.1] - 2026-09-14
 
