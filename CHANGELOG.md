@@ -30,6 +30,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   both `String(format:)` hex formatting of digest bytes in the SigV4 signing
   path, and are audited and marked.
 
+### Fixed
+
+- `headObject(bucket:key:)` throws `R2Error.notFound` for a missing object, as
+  documented, instead of an `UnknownError` service error. A HEAD response has
+  no body to carry the `NoSuchKey` code, so any bodyless 404 for an object is
+  now read as not found.
+
 ## [1.2.1] - 2026-09-14
 
 ### Changed
