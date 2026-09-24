@@ -30,6 +30,36 @@ actor HTTPClient {
     self.timeoutInterval = configuration.timeoutInterval
   }
 
+  /// The error a failed request throws, given the service error its response carried.
+  ///
+  /// A response with no body, as every HEAD response is, carries no error code, so a missing
+  /// object is recognized by its 404 status alone.
+  static func error(
+    for serviceError: R2ServiceError,
+    bucket: String,
+    key: String?,
+    retryAfter: TimeInterval?
+  ) -> R2Error {
+    switch serviceError.code {
+      case "NoSuchKey":
+        return .notFound(bucket: bucket, key: key)
+      case R2XMLParser.unknownErrorCode where serviceError.statusCode == 404 && key != nil:
+        return .notFound(bucket: bucket, key: key)
+      case "NoSuchBucket":
+        return .bucketNotFound(bucket: bucket)
+      case "AccessDenied":
+        return .accessDenied(message: serviceError.message)
+      case "InvalidAccessKeyId", "SignatureDoesNotMatch":
+        return .missingCredentials(serviceError.message)
+      case "PreconditionFailed":
+        return .preconditionFailed(message: serviceError.message)
+      case "SlowDown", "ServiceUnavailable":
+        return .rateLimited(retryAfter: retryAfter)
+      default:
+        return .serviceError(serviceError)
+    }
+  }
+
   /// Performs a request and returns the response data.
   func perform(
     method: String,
@@ -154,27 +184,14 @@ actor HTTPClient {
     let statusCode = response.statusCode
 
     guard statusCode >= 200 && statusCode < 300 else {
-      // Parse error response
-      let serviceError = R2XMLParser.parseError(data: data, statusCode: statusCode)
-
-      switch serviceError.code {
-        case "NoSuchKey":
-          throw R2Error.notFound(bucket: bucket, key: key)
-        case "NoSuchBucket":
-          throw R2Error.bucketNotFound(bucket: bucket)
-        case "AccessDenied":
-          throw R2Error.accessDenied(message: serviceError.message)
-        case "InvalidAccessKeyId", "SignatureDoesNotMatch":
-          throw R2Error.missingCredentials(serviceError.message)
-        case "PreconditionFailed":
-          throw R2Error.preconditionFailed(message: serviceError.message)
-        case "SlowDown", "ServiceUnavailable":
-          let retryAfter = response.value(forHTTPHeaderField: "Retry-After")
-            .flatMap { TimeInterval($0) }
-          throw R2Error.rateLimited(retryAfter: retryAfter)
-        default:
-          throw R2Error.serviceError(serviceError)
-      }
+      let retryAfter = response.value(forHTTPHeaderField: "Retry-After")
+        .flatMap { TimeInterval($0) }
+      throw Self.error(
+        for: R2XMLParser.parseError(data: data, statusCode: statusCode),
+        bucket: bucket,
+        key: key,
+        retryAfter: retryAfter
+      )
     }
   }
 

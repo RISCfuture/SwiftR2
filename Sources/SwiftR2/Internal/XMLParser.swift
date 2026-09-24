@@ -5,17 +5,20 @@ import Foundation
 
 /// Parser for S3/R2 XML responses.
 enum R2XMLParser {
+  /// The code given to an error response whose body names none.
+  static let unknownErrorCode = "UnknownError"
+
   /// Parses an error response.
   static func parseError(data: Data, statusCode: Int) -> R2ServiceError {
-    guard let xml = try? XMLDocument(data: data) else {
+    guard !data.isEmpty, let xml = try? XMLDocument(data: data) else {
       return R2ServiceError(
-        code: "UnknownError",
+        code: unknownErrorCode,
         message: "Failed to parse error response",
         statusCode: statusCode
       )
     }
 
-    let code = xml.rootElement()?.elements(forName: "Code").first?.stringValue ?? "UnknownError"
+    let code = xml.rootElement()?.elements(forName: "Code").first?.stringValue ?? unknownErrorCode
     let message =
       xml.rootElement()?.elements(forName: "Message").first?.stringValue ?? "Unknown error"
     let requestId = xml.rootElement()?.elements(forName: "RequestId").first?.stringValue

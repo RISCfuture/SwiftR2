@@ -72,6 +72,21 @@ func `describes R2 errors with a failure reason and recovery suggestion`() {
   #expect(serviceError.failureReason?.contains("req-123") == true)
 }
 
+/// A HEAD response has no body, so a missing object arrives with nothing but its 404 status.
+@Test
+func `reads a bodyless 404 for an object as not found`() {
+  let bodyless = R2XMLParser.parseError(data: Data(), statusCode: 404)
+
+  #expect(
+    HTTPClient.error(for: bodyless, bucket: "my-bucket", key: "my-key", retryAfter: nil)
+      == .notFound(bucket: "my-bucket", key: "my-key")
+  )
+  #expect(
+    HTTPClient.error(for: bodyless, bucket: "my-bucket", key: nil, retryAfter: nil)
+      == .serviceError(bodyless)
+  )
+}
+
 // MARK: - Model Tests
 
 @Test

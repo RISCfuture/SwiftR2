@@ -47,6 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The published documentation site's root URL resolves to the SwiftR2
   landing page instead of serving DocC's not-found view.
+- `headObject(bucket:key:)` throws `R2Error.notFound` for a missing object, as
+  documented, instead of an `UnknownError` service error. A HEAD response has
+  no body to carry the `NoSuchKey` code, so any bodyless 404 for an object is
+  now read as not found.
 
 ## [1.2.0] - 2026-07-06
 
