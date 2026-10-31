@@ -39,9 +39,9 @@ jobs:
             swift: "6.2"
           - os: macos-26
             swift: "6.4"
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             swift: "6.3"
-          - os: ubuntu-latest
+          - os: ubuntu-26.04
             swift: "6.4"
     runs-on: ${{ matrix.os }}
     steps:
@@ -63,7 +63,7 @@ jobs:
         run: swift test -v
   documentation:
     name: Build Documentation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v6
       - uses: SwiftyLab/setup-swift@latest
@@ -76,7 +76,7 @@ jobs:
             .build
             ~/.cache/org.swift.swiftpm
             ~/Library/Caches/org.swift.swiftpm
-          key: swiftpm-docs-ubuntu-latest-swift6.4-${{ hashFiles('Package.resolved') }}
+          key: swiftpm-docs-ubuntu-26.04-swift6.4-${{ hashFiles('Package.resolved') }}
       - name: Build Documentation
         run: |
           swift package \
